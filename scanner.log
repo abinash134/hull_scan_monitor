@@ -1,0 +1,8 @@
+2026-08-02 19:16:33,647 INFO hull_scan: HULL Scan monitor started (interval: 5.0 min, db: /home/leo/Documents/Default Project/hull_scan_monitor/scan_history.db)
+2026-08-02 19:16:34,411 INFO hull_scan: Scan returned 1 stock(s)
+2026-08-02 19:16:34,416 INFO hull_scan: New stock(s): MUTHOOTFIN
+2026-08-02 19:18:45,420 INFO hull_scan: HULL Scan monitor started (interval: 5.0 min, db: /home/leo/Documents/Default Project/hull_scan_monitor/scan_history.db)
+2026-08-02 19:18:46,288 INFO hull_scan: Scan returned 1 stock(s)
+2026-08-02 19:18:46,297 INFO hull_scan: No new stocks detected
+2026-08-02 19:23:46,372 INFO hull_scan: Scan returned 1 stock(s)
+2026-08-02 19:23:46,382 INFO hull_scan: No new stocks detected
