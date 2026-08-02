@@ -10,6 +10,11 @@ DB_PATH = os.environ.get(
 
 SCAN_INTERVAL_MINUTES = float(os.environ.get("HULL_SCAN_INTERVAL", "5"))
 
+MARKET_TZ = os.environ.get("MARKET_TZ", "Asia/Kolkata")
+MARKET_OPEN = os.environ.get("MARKET_OPEN", "09:30")
+MARKET_CLOSE = os.environ.get("MARKET_CLOSE", "15:30")
+MARKET_DAYS = {0, 1, 2, 3, 4}  # Monday(0) to Friday(4)
+
 REQUEST_TIMEOUT = 30
 RETRY_ATTEMPTS = 3
 RETRY_BACKOFF_SECONDS = 10

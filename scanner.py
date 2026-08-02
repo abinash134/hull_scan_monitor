@@ -6,12 +6,24 @@ import sqlite3
 import sys
 import time
 from datetime import datetime, timezone
+from zoneinfo import ZoneInfo
 
 import requests
 
 import config
 
 log = logging.getLogger("hull_scan")
+
+
+def is_market_open(now=None):
+    now = now or datetime.now(ZoneInfo(config.MARKET_TZ))
+    if now.weekday() not in config.MARKET_DAYS:
+        return False
+    open_h, open_m = (int(x) for x in config.MARKET_OPEN.split(":"))
+    close_h, close_m = (int(x) for x in config.MARKET_CLOSE.split(":"))
+    market_open = now.replace(hour=open_h, minute=open_m, second=0, microsecond=0)
+    market_close = now.replace(hour=close_h, minute=close_m, second=0, microsecond=0)
+    return market_open <= now < market_close
 
 
 # ---------------------------------------------------------------------------
@@ -257,19 +269,23 @@ def main():
     db = ScanDatabase(config.DB_PATH)
     interval_seconds = config.SCAN_INTERVAL_MINUTES * 60
 
-    log.info("HULL Scan monitor started (interval: %s min, db: %s)",
-             config.SCAN_INTERVAL_MINUTES, config.DB_PATH)
+    log.info("HULL Scan monitor started (interval: %s min, db: %s, market hours: %s-%s %s)",
+             config.SCAN_INTERVAL_MINUTES, config.DB_PATH,
+             config.MARKET_OPEN, config.MARKET_CLOSE, config.MARKET_TZ)
 
     while True:
         started = time.time()
-        try:
-            run_scan_once(client, db)
-        except Exception as e:
-            log.exception("Scan run failed: %s", e)
+        if is_market_open():
+            try:
+                run_scan_once(client, db)
+            except Exception as e:
+                log.exception("Scan run failed: %s", e)
+        else:
+            log.debug("Market closed; skipping scan")
 
         elapsed = time.time() - started
         sleep_for = max(interval_seconds - elapsed, 1)
-        log.debug("Next scan in %.0fs", sleep_for)
+        log.debug("Next check in %.0fs", sleep_for)
         time.sleep(sleep_for)
 
 
